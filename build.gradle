@@ -1,6 +1,12 @@
 plugins {
     id 'java'
+    id 'io.spring.dependency-management' version '1.0.11.RELEASE'
+    id 'org.springframework.boot' version '2.5.4'
 }
+
+// Java Version
+sourceCompatibility = 17
+targetCompatibility = 17
 
 group = 'ru.previak.restaurant'
 version = '1.0-SNAPSHOT'
@@ -9,6 +15,47 @@ repositories {
     mavenCentral()
 }
 
+// Spring
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-security'
+    implementation 'org.springframework.boot:spring-boot-starter-jdbc'
+    implementation 'org.springframework.boot:spring-boot-starter-validation'
+}
+
+// Lombok
+dependencies {
+    compileOnly 'org.projectlombok:lombok:1.18.30'
+    testCompileOnly 'org.projectlombok:lombok:1.18.30'
+    annotationProcessor 'org.projectlombok:lombok:1.18.30'
+    testAnnotationProcessor 'org.projectlombok:lombok:1.18.30'
+}
+
+// Mapstruct
+dependencies {
+    implementation 'org.mapstruct:mapstruct:1.4.2.Final'
+    annotationProcessor 'org.mapstruct:mapstruct-processor:1.4.2.Final'
+}
+
+// Postgres
+dependencies {
+    implementation 'org.postgresql:postgresql'
+}
+
+// Jjwt
+dependencies {
+    implementation 'io.jsonwebtoken:jjwt-api:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-impl:0.11.5'
+    implementation 'io.jsonwebtoken:jjwt-jackson:0.11.5'
+}
+
+// Swagger
+dependencies {
+    implementation 'io.springfox:springfox-boot-starter:3.0.0'
+}
+
+// Tests
 dependencies {
     testImplementation platform('org.junit:junit-bom:5.9.1')
     testImplementation 'org.junit.jupiter:junit-jupiter'

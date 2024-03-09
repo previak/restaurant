@@ -1,10 +1,13 @@
-package ru.previak.restaurant.store.repositories;
+package ru.previak.restaurant.repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import ru.previak.restaurant.store.entities.UserEntity;
+import org.springframework.stereotype.Repository;
+import ru.previak.restaurant.entities.UserEntity;
 
 import java.util.Optional;
+import java.util.stream.Stream;
 
+@Repository
 public interface UserRepository extends JpaRepository<UserEntity, Long> {
     Optional<UserEntity> findByUsername(String username);
 }

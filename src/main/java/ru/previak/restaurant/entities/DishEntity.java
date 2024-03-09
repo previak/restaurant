@@ -11,19 +11,18 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Table(name = "menu_item")
+@Table(name = "_dish")
 @Entity
-public class MenuItemEntity {
+public class DishEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     Long id;
 
+    @Column(unique = true)
     String name;
 
-    Long price;
+    Double price;
 
-    Long cookingTimeInMinute;
-
-    Long amount;
+    Long cookingTimeInMinutes;
 }

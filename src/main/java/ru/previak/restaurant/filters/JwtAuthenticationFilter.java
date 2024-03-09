@@ -1,4 +1,4 @@
-package ru.previak.restaurant.config;
+package ru.previak.restaurant.filters;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.lang.NonNull;
@@ -9,7 +9,7 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.web.authentication.WebAuthenticationDetailsSource;
 import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
-import ru.previak.restaurant.services.JwtService;
+import ru.previak.restaurant.services.interfaces.JwtService;
 
 import javax.servlet.FilterChain;
 import javax.servlet.ServletException;

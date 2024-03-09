@@ -1,6 +1,6 @@
 package ru.previak.restaurant.entities;
 
-public enum Role {
+public enum UserRole {
     USER,
     ADMIN
 }

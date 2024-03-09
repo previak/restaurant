@@ -1,2 +1,5 @@
-package ru.previak.restaurant.services.interfaces;public interface RestaurantStatisticsService {
+package ru.previak.restaurant.services.interfaces;
+
+public interface RestaurantStatisticsService {
+    Double getTotalRevenue();
 }

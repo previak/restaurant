@@ -1,4 +1,4 @@
-package ru.previak.restaurant.models;
+package ru.previak.restaurant.entities;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;
@@ -16,20 +16,21 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-@Entity
 @Table(name = "_user")
+@Entity
 public class UserEntity implements UserDetails {
 
     @Id
-    @GeneratedValue
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     Long id;
 
+    @Column(unique = true)
     String username;
 
     String password;
 
     @Enumerated(EnumType.STRING)
-    Role role;
+    UserRole role;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {

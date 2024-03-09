@@ -4,18 +4,25 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.io.Decoders;
 import io.jsonwebtoken.security.Keys;
+import lombok.AccessLevel;
+import lombok.RequiredArgsConstructor;
+import lombok.experimental.FieldDefaults;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Service;
 import io.jsonwebtoken.Jwts;
+import ru.previak.restaurant.services.interfaces.JwtService;
+
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.function.Function;
 
+@RequiredArgsConstructor
+@FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Service
-public class JwtService {
-    private static final String SECRET_KEY = "6DB47001D447ED052F382E4F82C9FF6FE079AECE35BFA240714E7116AF4E5002";
+public class JwtServiceImpl implements JwtService {
+    static String SECRET_KEY = "6DB47001D447ED052F382E4F82C9FF6FE079AECE35BFA240714E7116AF4E5002";
     public String extractUsername (String token) {
         return extractClaim(token, Claims::getSubject);
     }
@@ -35,7 +42,7 @@ public class JwtService {
                 .setClaims(extractClaims)
                 .setSubject(userDetails.getUsername())
                 .setIssuedAt(new Date(System.currentTimeMillis()))
-                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 24))
+                .setExpiration(new Date(System.currentTimeMillis() + 1000 * 60 * 60 * 24))
                 .signWith(getSignInKey(), SignatureAlgorithm.HS256)
                 .compact();
     }
