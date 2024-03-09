@@ -28,6 +28,9 @@ public class MenuItemServiceImpl implements MenuItemService {
     MenuItemMapper menuItemMapper;
     @Override
     public void createMenuItem(MenuItemDTO menuItemDTO) {
+        String dishName = menuItemDTO.getDishName();
+        dishRepository.findByName(dishName)
+                .orElseThrow(() -> new NotFoundException("Dish with name " + dishName + " not found"));
         MenuItemEntity menuItemEntity = menuItemMapper.menuItemDTO2MenuItemEntity(menuItemDTO);
         menuItemRepository.save(menuItemEntity);
     }

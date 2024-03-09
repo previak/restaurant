@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import ru.previak.restaurant.services.interfaces.RestaurantStatisticsService;
+import ru.previak.restaurant.services.interfaces.ReviewService;
 
 
 @RequiredArgsConstructor
@@ -21,12 +22,12 @@ import ru.previak.restaurant.services.interfaces.RestaurantStatisticsService;
 @Api("Restaurant statistics controller")
 public class RestaurantStatisticsController {
     RestaurantStatisticsService restaurantStatisticsService;
+    ReviewService reviewService;
 
-    @GetMapping()
+    @GetMapping("/revenue")
     @ApiOperation("Get total revenue")
     public ResponseEntity<String> getTotalRevenue() {
         return ResponseEntity.ok("Total revenue: " + restaurantStatisticsService.getTotalRevenue());
     }
-
 
 }

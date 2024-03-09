@@ -4,7 +4,6 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 import ru.previak.restaurant.dto.OrderDTO;
 import ru.previak.restaurant.entities.DishEntity;
 import ru.previak.restaurant.entities.MenuItemEntity;
@@ -18,6 +17,7 @@ import ru.previak.restaurant.repositories.MenuItemRepository;
 import ru.previak.restaurant.repositories.OrderRepository;
 import ru.previak.restaurant.services.interfaces.OrderService;
 
+import javax.transaction.Transactional;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -31,7 +31,6 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
-@Transactional
 @FieldDefaults(level = AccessLevel.PRIVATE, makeFinal = true)
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -43,6 +42,7 @@ public class OrderServiceImpl implements OrderService {
     ExecutorService executorService = Executors.newCachedThreadPool();
     List<CompletableFuture<Void>> cookingTasks = new ArrayList<>();
 
+    @Transactional
     @Override
     public Long createOrder(Long userId) {
         OrderEntity orderEntity = new OrderEntity();
@@ -52,6 +52,7 @@ public class OrderServiceImpl implements OrderService {
         return orderEntity.getId();
     }
 
+    @Transactional
     @Override
     public void addDishToOrder(Long orderId, String dishName, Long amount, Long userId) {
         OrderEntity orderEntity = orderRepository.findById(orderId)
@@ -92,28 +93,29 @@ public class OrderServiceImpl implements OrderService {
         if (orderEntity.getStatus() == OrderStatus.COOKING) {
             for (int i = 0; i < amount; ++i) {
                 DishEntity dish = dishRepository.findByName(dishName)
-                        .orElseThrow(() -> new NotFoundException("\\u001B[32mDish with name " + dishName + " not found"));
+                        .orElseThrow(() -> new NotFoundException("Dish with name " + dishName + " not found"));
                 Long cookingTimeInMinutes = dish.getCookingTimeInMinutes();
 
                 final int finalI = i;
                 CompletableFuture<Void> dishTask = CompletableFuture.runAsync(() -> {
                     try {
-                        System.out.println("\\u001B[32mDish " + dishName + " #" + (finalI + 1) + " has begun to cook\\u001B[0m");
+                        System.out.println("Dish " + dishName + " #" + (finalI + 1) + " has begun to cook");
                         TimeUnit.MINUTES.sleep(cookingTimeInMinutes);
-                        System.out.println("\\u001B[32mDish " + dishName + " #" + (finalI + 1) + " is ready\\u001B[0m");
+                        System.out.println("Dish " + dishName + " #" + (finalI + 1) + " is ready");
                     } catch (InterruptedException e) {
                         Thread.currentThread().interrupt();
-                        System.err.println("\\u001B[32mTask was interrupted: " + e.getMessage() + "\\u001B[0m");
+                        System.err.println("Task was interrupted: " + e.getMessage());
                     }
                 }, executorService);
 
                 cookingTasks.add(dishTask);
             }
+            System.out.println("Additional dishes in order " + orderId + " are finished");
+            orderRepository.save(orderEntity);
         }
-
-        orderRepository.save(orderEntity);
     }
 
+    @Transactional
     @Override
     public List<OrderDTO> getUserOrders(Long userId) {
         Stream<OrderEntity> userOrders = orderRepository.streamAllByUserId(userId);
@@ -141,25 +143,25 @@ public class OrderServiceImpl implements OrderService {
         }
 
         order.setStatus(OrderStatus.COOKING);
-        System.out.println("\\u001B[32mOrder " + orderId + " cooking process has begun\\u001B[0m");
+        System.out.println("Order " + orderId + " cooking process has begun");
         order.setStartDate(new Date());
         orderRepository.save(order);
 
         for (Map.Entry<String, Long> entry : dishes.entrySet()) {
             String dishName = entry.getKey();
             DishEntity dish = dishRepository.findByName(dishName)
-                    .orElseThrow(() -> new NotFoundException("\\u001B[32mOrder with id " + orderId + " not found\\u001B[0m"));
+                    .orElseThrow(() -> new NotFoundException("Order with id " + orderId + " not found"));
             Long cookingTimeInMinutes = dish.getCookingTimeInMinutes();
 
             List<CompletableFuture<Void>> dishTasks = IntStream.range(0, entry.getValue().intValue())
                     .mapToObj(i -> CompletableFuture.runAsync(() -> {
                         try {
-                            System.out.println("\\u001B[32mDish " + dishName + " #" + (i + 1) + " has begun to cook\\u001B[0m");
+                            System.out.println("Dish " + dishName + " #" + (i + 1) + " has begun to cook");
                             TimeUnit.MINUTES.sleep(cookingTimeInMinutes);
-                            System.out.println("\\u001B[32mDish " + dishName + " #" + (i + 1) + " is ready\\u001B[0m");
+                            System.out.println("Dish " + dishName + " #" + (i + 1) + " is ready");
                         } catch (InterruptedException e) {
                             Thread.currentThread().interrupt();
-                            System.err.println("\\u001B[32mTask was interrupted: " + e.getMessage() + "\\u001B[0m");
+                            System.err.println("Task was interrupted: " + e.getMessage());
                         }
                     }, executorService))
                     .toList();
@@ -170,12 +172,13 @@ public class OrderServiceImpl implements OrderService {
         CompletableFuture.allOf(cookingTasks.toArray(new CompletableFuture[0])).join();
 
         order.setStatus(OrderStatus.DONE);
-        System.out.println("\\u001B[32mOrder " + orderId + " is finished\\u001B[0m");
+        System.out.println("Order " + orderId + " is finished");
         order.setEndDate(new Date());
 
         orderRepository.save(order);
     }
 
+    @Transactional
     @Override
     public void cancelOrder(Long orderId, Long userId) {
         OrderEntity order = orderRepository.findById(orderId)
@@ -203,6 +206,7 @@ public class OrderServiceImpl implements OrderService {
         cookingTasks.removeIf(CompletableFuture::isDone);
     }
 
+    @Transactional
     @Override
     public void payOrder(Long orderId, Long userId) {
         OrderEntity order = orderRepository.findById(orderId)
