@@ -13,6 +13,7 @@ import ru.previak.restaurant.repositories.DishRepository;
 import ru.previak.restaurant.repositories.OrderRepository;
 import ru.previak.restaurant.services.interfaces.RestaurantStatisticsService;
 
+import java.util.Date;
 import java.util.stream.Stream;
 
 @RequiredArgsConstructor
@@ -38,5 +39,19 @@ public class RestaurantStatisticsServiceImpl implements RestaurantStatisticsServ
                     return dish.getPrice() * amount;
                 })
                 .sum();
+    }
+
+    @Override
+    public Long getAmountOfPayedOrders() {
+        return orderRepository.streamAllBy()
+                .filter(order -> order.getStatus() == OrderStatus.PAYED)
+                .count();
+    }
+
+    @Override
+    public Long getOrderCountBetweenDates(Date startDate, Date endDate) {
+        return orderRepository.streamAllBy()
+                .filter(order -> order.getStartDate().after(startDate) && order.getStartDate().before(endDate))
+                .count();
     }
 }

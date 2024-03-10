@@ -50,7 +50,7 @@ public class OrderController {
     ) {
         UserEntity user = (UserEntity) userDetailsService.loadUserByUsername(principal.getName());
         orderService.addDishToOrder(orderId, dishName, amount, user.getId());
-        return ResponseEntity.ok("Dish was successfully added to order with id = " + orderId);
+        return ResponseEntity.ok("Dish " + dishName + " was successfully added to order with id = " + orderId);
     }
 
     @GetMapping

@@ -19,6 +19,7 @@ public class MenuItemEntity {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     Long id;
 
+    @Column(unique = true)
     String dishName;
 
     Long amount;

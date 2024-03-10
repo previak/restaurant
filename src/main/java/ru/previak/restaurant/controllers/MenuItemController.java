@@ -32,7 +32,7 @@ public class MenuItemController {
             @Valid @RequestBody MenuItemDTO menuItemDTO
             ) {
         menuItemService.createMenuItem(menuItemDTO);
-        return ResponseEntity.ok("Menu item was successfully created");
+        return ResponseEntity.ok("Menu item with dish " + menuItemDTO.getDishName() + " was successfully created");
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)

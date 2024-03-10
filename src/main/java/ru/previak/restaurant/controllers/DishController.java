@@ -32,7 +32,7 @@ public class DishController {
             @Valid @RequestBody DishDTO dishDTO
     ) {
         dishService.createDish(dishDTO);
-        return ResponseEntity.ok("Dish was successfully created");
+        return ResponseEntity.ok("Dish " + dishDTO.getName() + " was successfully created");
     }
 
     @ResponseStatus(HttpStatus.NO_CONTENT)

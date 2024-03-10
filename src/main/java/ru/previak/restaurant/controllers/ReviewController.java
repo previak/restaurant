@@ -16,6 +16,7 @@ import ru.previak.restaurant.dto.ReviewDTO;
 import ru.previak.restaurant.entities.UserEntity;
 import ru.previak.restaurant.services.interfaces.ReviewService;
 
+import javax.validation.Valid;
 import java.security.Principal;
 
 @RequiredArgsConstructor
@@ -28,10 +29,11 @@ public class ReviewController {
 
     UserDetailsService userDetailsService;
     ReviewService reviewService;
+
     @PostMapping
     @ApiOperation("Post review")
     public ResponseEntity<String> postReview(
-            @RequestBody ReviewDTO reviewDTO,
+            @Valid @RequestBody ReviewDTO reviewDTO,
             Principal principal
     ) {
         UserEntity user = (UserEntity) userDetailsService.loadUserByUsername(principal.getName());
